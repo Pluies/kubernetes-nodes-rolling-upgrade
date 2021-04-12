@@ -46,7 +46,19 @@ do
     echo "Upgrading node $NODE"
 
     echo "${bold}Step 1: drain${normal}"
-    run kubectl drain --timeout="$DRAIN_TIMEOUT"s --ignore-daemonsets --delete-local-data "$NODE" || echo "Drain went over timeout, terminated"
+    set +e
+    run kubectl drain --timeout="$DRAIN_TIMEOUT"s --ignore-daemonsets --delete-local-data "$NODE"
+    STATUS=$?
+    if [ $STATUS -eq 0 ]
+    then
+      echo "Node drained successfully"
+    elif [ $STATUS -eq 124 ]
+    then
+      echo "⚠️ Drain went over timeout, terminating node anyway"
+    else
+      echo "⚠️ Drain failed, skipping node"
+      continue
+    fi
 
     echo "${bold}Step 2: terminate${normal}"
     INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=private-dns-name,Values=$NODE" --output text --query 'Reservations[*].Instances[*].InstanceId')
