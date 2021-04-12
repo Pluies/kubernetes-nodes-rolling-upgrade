@@ -43,7 +43,9 @@ do
 
   for NODE in $UPGRADEABLE_NODES
   do
+    echo ""
     echo "• Upgrading node ${bold}$NODE${normal}"
+    echo ""
 
     echo "${bold}Step 1: drain${normal}"
     set +e
@@ -78,7 +80,6 @@ do
       PODS=$(kubectl get pods --all-namespaces)
     done
     echo "No unscheduled pods!"
-
     echo ""
   done
 done
