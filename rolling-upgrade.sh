@@ -43,7 +43,7 @@ do
 
   for NODE in $UPGRADEABLE_NODES
   do
-    echo "Upgrading node $NODE"
+    echo "• Upgrading node ${bold}$NODE${normal}"
 
     echo "${bold}Step 1: drain${normal}"
     set +e
@@ -54,9 +54,9 @@ do
       echo "Node drained successfully"
     elif [ $STATUS -eq 124 ]
     then
-      echo "⚠️ Drain went over timeout, terminating node anyway"
+      echo "⚠️  Drain went over timeout, terminating node anyway"
     else
-      echo "⚠️ Drain failed, skipping node"
+      echo "⚠️  Drain failed, skipping node"
       continue
     fi
 
