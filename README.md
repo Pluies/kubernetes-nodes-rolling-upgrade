@@ -36,4 +36,4 @@ Configuration is done through env vars.
 |------------------------|---------------------------------------------------|---------------|
 | `VERSION`              | The version to upgrade to. Must be in the "VERSION" field of `kubectl get node` | _Unset_ |
 | `DRY_RUN`              | Whether to actually delete the nodes, or just print out what the script would do. Any non-empty value forces a dry run. | `""` |
-| `DRAIN_TIMEOUT`        | Maximum time for a node to finish draining, in seconds. | `120` |
+| `DRAIN_TIMEOUT`        | Maximum time for a node to finish draining before it gets forcefully terminated, in seconds. | `300` |

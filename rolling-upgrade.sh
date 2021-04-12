@@ -7,7 +7,7 @@ set -euo pipefail
 
 VERSION=${VERSION:-noversion}
 DRY_RUN=${1:-}
-DRAIN_TIMEOUT=${DRAIN_TIMEOUT:-120}
+DRAIN_TIMEOUT=${DRAIN_TIMEOUT:-300}
 
 if [ "$VERSION" == "noversion" ]
 then
