@@ -59,7 +59,7 @@ do
 
     echo "${bold}Step 3: wait for pending pods${normal}"
     PODS=$(kubectl get pods --all-namespaces)
-    while echo "$PODS" | grep -e 'Pending\|ContainerCreating\|Terminating'
+    while echo "$PODS" | grep -e 'Pending' -e 'ContainerCreating' -e 'Terminating'
     do
       echo "^ Found pending / terminating pods, waiting 5 seconds..."
       sleep 5
