@@ -6,7 +6,7 @@ set -euo pipefail
 # See README.md for details
 
 VERSION=${VERSION:-noversion}
-DRY_RUN=${1:-}
+DRY_RUN=${DRY_RUN:-}
 DRAIN_TIMEOUT=${DRAIN_TIMEOUT:-300}
 
 if [ "$VERSION" == "noversion" ]
@@ -17,9 +17,12 @@ then
 fi
 
 function run() {
-  echo "$@"
   if [ -z "$DRY_RUN" ]; then
+    echo "Running: $*"
     "$@"
+  else
+    echo "Dry run mode enabled 🍃"
+    echo "Would run: $*"
   fi
 }
 bold=$(tput bold)
@@ -73,12 +76,18 @@ do
 
     echo "${bold}Step 3: wait for pending pods${normal}"
     PODS=$(kubectl get pods --all-namespaces)
-    while echo "$PODS" | grep -e 'Pending' -e 'ContainerCreating' -e 'Terminating'
-    do
-      echo "^ Found pending / terminating pods, waiting 5 seconds..."
-      sleep 5
-      PODS=$(kubectl get pods --all-namespaces)
-    done
+    if [ -z "$DRY_RUN" ]; then
+      while echo "$PODS" | grep -e 'Pending' -e 'ContainerCreating' -e 'Terminating'
+      do
+        echo "^ Found pending / terminating pods, waiting 5 seconds..."
+        sleep 5
+        PODS=$(kubectl get pods --all-namespaces)
+      done
+    else
+      echo "Dry run mode enabled 🍃"
+      echo "Would wait for pods"
+    fi
+
     echo "No unscheduled pods!"
     echo ""
   done
