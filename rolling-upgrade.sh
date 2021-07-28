@@ -52,7 +52,7 @@ do
 
     echo "${bold}Step 1: drain${normal}"
     set +e
-    run kubectl drain --timeout="$DRAIN_TIMEOUT"s --ignore-daemonsets --delete-local-data "$NODE"
+    run kubectl drain --timeout="$DRAIN_TIMEOUT"s --ignore-daemonsets --delete-emptydir-data "$NODE"
     STATUS=$?
     if [ $STATUS -eq 0 ]
     then
