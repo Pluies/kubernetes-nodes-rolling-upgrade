@@ -28,6 +28,24 @@ function run() {
 bold=$(tput bold)
 normal=$(tput sgr0)
 
+echo "First things first: let's cordon upgradeable nodes so that new workloads will only be deployed on newe nodes"
+UPGRADEABLE_NODES=$(kubectl get node --no-headers | { grep -v "$VERSION" || true; } | awk '{print $1}')
+if [ -z "$UPGRADEABLE_NODES" ]
+then
+  echo "No upgradeable nodes - rollout finished!"
+  exit 0
+else
+  echo "Found the following upgradeable nodes:"
+  echo "$UPGRADEABLE_NODES"
+fi
+
+echo ""
+echo "Cordoning off upgradeable nodes 📴"
+for NODE in $UPGRADEABLE_NODES
+do
+  kubectl cordon "$NODE"
+done
+
 while true
 do
   echo "Looking for upgradeable nodes..."
