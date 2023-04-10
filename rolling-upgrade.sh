@@ -43,7 +43,7 @@ echo ""
 echo "Cordoning off upgradeable nodes 📴"
 for NODE in $UPGRADEABLE_NODES
 do
-  kubectl cordon "$NODE"
+  run kubectl cordon "$NODE"
 done
 
 while true
