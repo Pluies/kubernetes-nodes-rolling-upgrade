@@ -28,17 +28,18 @@ function run() {
 bold=$(tput bold)
 normal=$(tput sgr0)
 
-echo "First things first: let's cordon upgradeable nodes so that new workloads will only be deployed on newe nodes"
-UPGRADEABLE_NODES=$(kubectl get node --no-headers | { grep -v "$VERSION" || true; } | awk '{print $1}')
-if [ -z "$UPGRADEABLE_NODES" ]
+echo "First things first: let's cordon upgradeable nodes so that new workloads will only be deployed on newer nodes"
+UPGRADEABLE_NODES_WITH_VERSION=$(kubectl get node --no-headers | { grep -v "$VERSION" || true; } | awk '{print $1 " (current version: " $5 ")" }')
+if [ -z "$UPGRADEABLE_NODES_WITH_VERSION" ]
 then
   echo "No upgradeable nodes - rollout finished!"
   exit 0
 else
   echo "Found the following upgradeable nodes:"
-  echo "$UPGRADEABLE_NODES"
+  echo "$UPGRADEABLE_NODES_WITH_VERSION"
 fi
 
+UPGRADEABLE_NODES=$(kubectl get node --no-headers | { grep -v "$VERSION" || true; } | awk '{print $1}')
 echo ""
 echo "Cordoning off upgradeable nodes 📴"
 for NODE in $UPGRADEABLE_NODES
