@@ -5,14 +5,14 @@ set -euo pipefail
 #
 # See README.md for details
 
-VERSION=${VERSION:-noversion}
+TARGET_VERSION=${TARGET_VERSION:-noversion}
 DRY_RUN=${DRY_RUN:-}
 DRAIN_TIMEOUT=${DRAIN_TIMEOUT:-300}
 
-if [ "$VERSION" == "noversion" ]
+if [ "$TARGET_VERSION" == "noversion" ]
 then
-  echo "Missing env var VERSION"
-  echo "This is the version you want to end up with; e.g. run \`VERSION=1.19 $0\` if you want to upgrade from 1.18 to 1.19."
+  echo "Missing env var TARGET_VERSION"
+  echo "This is the version you want to end up with; e.g. run \`TARGET_VERSION=1.30 $0\` if you want to upgrade from 1.29 to 1.30."
   exit 1
 fi
 
@@ -29,7 +29,7 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 echo "First things first: let's cordon upgradeable nodes so that new workloads will only be deployed on newer nodes"
-UPGRADEABLE_NODES_WITH_VERSION=$(kubectl get node --no-headers | { grep -v "$VERSION" || true; } | awk '{print $1 " (current version: " $5 ")" }')
+UPGRADEABLE_NODES_WITH_VERSION=$(kubectl get node --no-headers | { grep -v "$TARGET_VERSION" || true; } | awk '{print $1 " (current version: " $5 ")" }')
 if [ -z "$UPGRADEABLE_NODES_WITH_VERSION" ]
 then
   echo "No upgradeable nodes - rollout finished!"
@@ -39,7 +39,7 @@ else
   echo "$UPGRADEABLE_NODES_WITH_VERSION"
 fi
 
-UPGRADEABLE_NODES=$(kubectl get node --no-headers | { grep -v "$VERSION" || true; } | awk '{print $1}')
+UPGRADEABLE_NODES=$(kubectl get node --no-headers | { grep -v "$TARGET_VERSION" || true; } | awk '{print $1}')
 echo ""
 echo "Cordoning off upgradeable nodes 📴"
 for NODE in $UPGRADEABLE_NODES
@@ -50,7 +50,7 @@ done
 while true
 do
   echo "Looking for upgradeable nodes..."
-  UPGRADEABLE_NODES=$(kubectl get node --no-headers | { grep -v "$VERSION" || true; } | awk '{print $1}')
+  UPGRADEABLE_NODES=$(kubectl get node --no-headers | { grep -v "$TARGET_VERSION" || true; } | awk '{print $1}')
   if [ -z "$UPGRADEABLE_NODES" ]
   then
     echo "No more upgradeable nodes - rollout finished!"
@@ -98,7 +98,7 @@ do
     if [ -z "$DRY_RUN" ]; then
       while echo "$PODS" | grep -e 'Pending' -e 'ContainerCreating' -e 'Terminating'
       do
-        echo "^ Found pending / terminating pods, waiting 5 seconds..."
+        echo "^ Found pending / creating / terminating pods, waiting 5 seconds..."
         sleep 5
         PODS=$(kubectl get pods --all-namespaces)
       done

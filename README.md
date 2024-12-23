@@ -37,7 +37,7 @@ Drain **will not** delete a node if there are pods not managed by a ReplicationC
 ## Usage
 
 ```bash
-VERSION=v1.19.6 ./rolling-upgrade.sh
+TARGET_VERSION=v1.30 ./rolling-upgrade.sh
 ```
 
 ## Configuration
@@ -46,6 +46,6 @@ Configuration is done through env vars.
 
 | Environment variable   | Action                                            | Default value |
 |------------------------|---------------------------------------------------|---------------|
-| `VERSION`              | The version to upgrade to. Must be in the "VERSION" field of `kubectl get node` | _Unset_ |
+| `TARGET_VERSION`       | The target version to upgrade to. Must be a substring match in the "VERSION" field of `kubectl get node` | _Unset_ |
 | `DRY_RUN`              | Whether to actually delete the nodes, or just print out what the script would do. Any non-empty value forces a dry run. | `""` |
 | `DRAIN_TIMEOUT`        | Maximum time for a node to finish draining before it gets forcefully terminated, in seconds. | `300` |
