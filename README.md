@@ -5,7 +5,7 @@ Script to upgrade worker nodes in a Kubernetes cluster on AWS.
 ## Assumptions
 
 - You want to upgrade from version _x_ to version _y_
-- Your nodes are in an autoscaling group, and new nodes will be created as version _y_
+- Your nodes are in an autoscaling group (or use karpenter), and newly created nodes will be created as version _y_
 
 ## Operation
 
@@ -27,7 +27,7 @@ Nodes are drained with:
 
 Drain **will not** delete a node if there are pods not managed by a ReplicationController, ReplicaSet, Job, DaemonSet or StatefulSet, as these pods would not be recreated automatically on a new node. If you need this, you'll need to add the `--force` flag to `kubectl drain`.
 
-**Warning**: this script _does not_ recreate nodes! It only terminates them cleanly and relies on the ASG or the cluster-autoscaler to recreate updated nodes.
+**Warning**: this script _does not_ recreate nodes! It only terminates them cleanly and relies on the ASG or the cluster autoscaler to recreate updated nodes.
 
 ## Prerequisites
 
